@@ -1,0 +1,94 @@
+﻿
+
+@if (Session["name"] != null)
+{
+    <form method="post">
+        <div>
+            <h4 class="text-right">Добро пожаловать @Session["name"].ToString()</h4>
+        </div>
+        <h2 class="text-center">Список пользователей</h2>
+        <div>
+            <button type="submit" name="block" runat class="btn btn-info">
+                <h5>
+                    Block
+                    <svg class="bi bi-lock-fill" width="1.2em" height="1.2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="11" height="9" x="2.5" y="7" rx="2" />
+                        <path fill-rule="evenodd" d="M4.5 4a3.5 3.5 0 117 0v3h-1V4a2.5 2.5 0 00-5 0v3h-1V4z" clip-rule="evenodd" />
+                    </svg>
+                </h5>
+            </button>
+            <button type="submit" name="unblock" class="btn btn-info">
+                <h5>
+                    Unblock
+                    <svg class="bi bi-unlock-fill" width="1.2em" height="1.2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M.5 9a2 2 0 012-2h7a2 2 0 012 2v5a2 2 0 01-2 2h-7a2 2 0 01-2-2V9z" />
+                        <path fill-rule="evenodd" d="M8.5 4a3.5 3.5 0 117 0v3h-1V4a2.5 2.5 0 00-5 0v3h-1V4z" clip-rule="evenodd" />
+                    </svg>
+                </h5>
+            </button>
+            <button type="submit" name="delete" class="btn btn-info" >
+                <h5>
+                    Delete
+                    <svg class="bi bi-trash-fill" width="1.2em" height="1.2em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M2.5 1a1 1 0 00-1 1v1a1 1 0 001 1H3v9a2 2 0 002 2h6a2 2 0 002-2V4h.5a1 1 0 001-1V2a1 1 0 00-1-1H10a1 1 0 00-1-1H7a1 1 0 00-1 1H2.5zm3 4a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7a.5.5 0 01.5-.5zM8 5a.5.5 0 01.5.5v7a.5.5 0 01-1 0v-7A.5.5 0 018 5zm3 .5a.5.5 0 00-1 0v7a.5.5 0 001 0v-7z" clip-rule="evenodd" />
+                    </svg>
+                </h5>
+            </button>
+        </div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" class="form-check-input all" data-id="d1" id="checkAll"></th>
+                    <th>Id</th>
+                    <th>Имя</th>
+                    <th>Email адрес</th>
+                    <th>Дата регистрации</th>
+                    <th>Дата последнего входа</th>
+                    <th>Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    foreach (var user in ViewBag.userList)
+                    {
+                        <tr>
+                            <td><input type="checkbox" name="selectedUsers" class="form-check-input one" data-id="d1" id="@user.ID" value="@user.ID"></td>
+                            <td>@user.ID</td>
+                            <td>@user.name</td>
+                            <td>@user.email</td>
+                            <td>@user.registerDate</td>
+                            @{
+                                if (user.lastLoginDate == null)
+                                {
+                                    <td></td>
+                                }
+                                else
+                                {
+                                    <td>@(Convert.ToDateTime(user.lastLoginDate))</td>
+                                }
+                            }
+                            <td>@user.status</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </form>
+}
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $(".all").on("change", function () {
+                var groupId = $(this).data('id');
+                $('.one[data-id="' + groupId + '"]').prop("checked", this.checked);
+            });
+
+            $(".one").on("change", function () {
+                var groupId = $(this).data('id');
+                var allChecked = $('.one[data-id="' + groupId + '"]:not(:checked)').length == 0;
+                $('.all[data-id="' + groupId + '"]').prop("checked", allChecked);
+            });
+        });
+    </script>
+}
